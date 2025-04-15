@@ -4,13 +4,20 @@
 #include <utility> // for pairs
 using namespace std;
 
+ifstream read;
+
 int main()
 {
 
+    ofstream write("storage.csv", ios::app); // to append
+    if (!read)
+    {
+        cout << "File failed to open\n";
+        return 1;
+    }
+
     map<string, pair<string, string> /* */> Contact_Info; // some old c++ version support
     map<string, pair<string, string> /* */>::iterator iter;
-
-    // Load for csv file
 
     int userChoice;
     char userWord = 'Y';
@@ -27,6 +34,7 @@ int main()
         cout << "2. Search for a contact\n";
         cout << "3. Delete a contact\n";
         cout << "4. Display all contact\n";
+        cout << "5. Save contact to database\n";
         cout << "Selecting... ";
         cin >> userChoice;
         cin.ignore();
@@ -38,6 +46,7 @@ int main()
         // Call/SMS simulation logs
         // interacting with sql
         // Gui
+        // Load for csv file
         switch (userChoice)
         {
         case 1:
@@ -140,21 +149,62 @@ int main()
 
         case 2:
         {
+
+            string name_value;
             cout << "\n";
-            cout << "Adding Contact\n";
+            cout << "Searching for a  Contact\n";
             cout << "-----------------\n";
-
-            cout << "Enter Contact Name or Number to search \n";
-
+            cout << "Enter Contact name for searching: ";
+            getline(cin, name_value);
+            cout << "\n";
+            if (Contact_Info.find(name_value) != Contact_Info.end())
+            {
+                cout << "-----------------\n";
+                cout << "Contact Found!\n";
+                cout << "-----------------\n";
+                cout << "Name: " << name_value << "\n";
+                // cout << "Number: " << Contact_Info.at(name_value); // remember its a map with a pair stop making the same mistake lol
+                cout << "Number: " << Contact_Info.at(name_value).second << "\n";
+                cout << "Email: " << Contact_Info.at(name_value).first << "\n";
+                cout << "-----------------\n";
+                cout << "\n";
+            }
+            else
+            {
+                cout << "-----------------\n";
+                cout << "Contact not found!\n";
+                cout << "-----------------\n";
+            }
             break;
         }
 
         case 3:
         {
+            string name_value;
             cout << "\n";
-            cout << "Searching for Contact\n";
+            cout << "Deleting a Contact\n";
             cout << "-----------------\n";
-
+            cout << "Enter Contact name for deleting: ";
+            getline(cin, name_value);
+            if (Contact_Info.find(name_value) != Contact_Info.end())
+            {
+                cout << "-----------------\n";
+                cout << "Contact Found!\n";
+                cout << "-----------------\n";
+                cout << "Name: " << name_value << "\n";
+                cout << "Number: " << Contact_Info.at(name_value).second << "\n";
+                cout << "Email: " << Contact_Info.at(name_value).first << "\n";
+                cout << "-----------------\n";
+                Contact_Info.erase(name_value);
+                cout << "Contact deleted\n";
+                cout << "\n";
+            }
+            else
+            {
+                cout << "-----------------\n";
+                cout << "Contact not found cannot delete \n";
+                cout << "-----------------\n";
+            }
             break;
         }
 
@@ -175,6 +225,10 @@ int main()
                 ++i;
             }
             break;
+        }
+
+        case 5:
+        {
         }
         default:
             break;
