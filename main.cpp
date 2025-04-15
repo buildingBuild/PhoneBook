@@ -229,7 +229,7 @@ int main()
 
         case 5:
         {
-        }
+                }
         default:
             break;
         }
