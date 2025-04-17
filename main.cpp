@@ -2,22 +2,29 @@
 #include <fstream> // for file handling
 #include <map>     // um for maps obviously lol
 #include <utility> // for pairs
+#include <sstream>
 using namespace std;
-
-ifstream read;
 
 int main()
 {
 
-    ofstream write("storage.csv", ios::app); // to append
-    if (!read)
-    {
-        cout << "File failed to open\n";
-        return 1;
-    }
-
     map<string, pair<string, string> /* */> Contact_Info; // some old c++ version support
     map<string, pair<string, string> /* */>::iterator iter;
+
+    ifstream read("storage.txt");
+    if (!read)
+    {
+
+        cout << "File failed to open for reading\n";
+        return 1;
+    }
+    string Name;
+    string Number;
+    string email;
+    while (read >> Name >> Number >> email)
+    {
+        Contact_Info[Name] = make_pair(email, Number);
+    }
 
     int userChoice;
     char userWord = 'Y';
@@ -38,14 +45,7 @@ int main()
         cout << "Selecting... ";
         cin >> userChoice;
         cin.ignore();
-        // Favorites feature
-        // Search by name prefix
-        // Sort by recent contact
-        // Birthday Reminders
-        // Export to file (txt/csv)
-        // Call/SMS simulation logs
         // interacting with sql
-        // Gui
         // Load for csv file
         switch (userChoice)
         {
@@ -229,7 +229,36 @@ int main()
 
         case 5:
         {
+            ofstream write("storage.csv", ios::app); // to append
+            if (!write)
+            {
+                cout << "File failed to open for writing\n";
+                break;
+            }
+
+            ofstream write2("storage.txt", ios::trunc); // to append
+            if (!write)
+            {
+                cout << "File failed to open for writing\n";
+                break;
+            }
+            cout << "\n";
+            // cout to csv file
+            for (iter = Contact_Info.begin(); iter != Contact_Info.end(); ++iter)
+            {
+                write2 << iter->first << " " << iter->second.second << " " << iter->second.first;
+                write << iter->first << "," << iter->second.second << "," << iter->second.first;
+                if (next(iter) != Contact_Info.end())
+                {
+                    write2 << "\n"; // line left this way because of spacing bug
+                    write << "\n";
                 }
+            }
+            cout << "Contacts saved!\n";
+            write.close();
+            write2.close();
+            break;
+        }
         default:
             break;
         }
@@ -239,6 +268,6 @@ int main()
         cin.ignore();
 
     } while (userWord == 'Y');
-    cout << "Hello we are winning you hear me dude can you hear me\n";
+    cout << "Thank you for using the program!!\n";
     return 0;
 }
