@@ -257,6 +257,26 @@ int main()
             cout << "Contacts saved!\n";
             write.close();
             write2.close();
+
+            ofstream sql("phoneBook.sql");
+            sql << "CREATE DATABASE IF NOT EXISTS phonebook_db;\n";
+            sql << "USE phonebook_db;\n";
+            sql << "CREATE TABLE IF NOT EXISTS contacts (\n";
+            sql << "  name VARCHAR(100),\n";
+            sql << "  number VARCHAR(20),\n";
+            sql << "  email VARCHAR(100)\n);\n\n";
+            sql << "INSERT INTO contacts (name, number, email) VALUES\n";
+
+            int count = 0;
+            for (iter = Contact_Info.begin(); iter != Contact_Info.end(); ++iter)
+            {
+                sql << "('" << iter->first << "', '" << iter->second.second << "', '" << iter->second.first << "')";
+                if (next(iter) != Contact_Info.end())
+                    sql << ",\n";
+                else
+                    sql << ";\n";
+            }
+            sql.close();
             break;
         }
         default:
